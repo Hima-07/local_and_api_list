@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ui_managnment
 
 A new Flutter project.
@@ -14,3 +15,6 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# local_and_api_list
+>>>>>>> 186d8be1e9a8af00b65113c96a06136bb8cf4cd9
