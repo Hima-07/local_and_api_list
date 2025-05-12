@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:ui_managnment/login_page.dart';
 
 class AddItemToList extends StatefulWidget {
   const AddItemToList({super.key});
@@ -56,7 +58,16 @@ class _AddItemToListState extends State<AddItemToList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Local + API List")),
+      appBar: AppBar(
+          title: const Text("Local + API List"),
+      leading: IconButton(onPressed: ()async{
+        await FirebaseAuth.instance.signOut();
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+              (route) => false,
+        );
+      }, icon: Icon(Icons.logout),)),
       body: Column(
         children: [
           // Input Section

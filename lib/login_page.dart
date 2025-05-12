@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ui_managnment/add_item_to_list.dart';
 
 class LoginPage extends StatefulWidget {
@@ -9,6 +11,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  @override
+  void initState(){
+    super.initState();
+  }
 
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
@@ -58,8 +64,11 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                Expanded(child: ElevatedButton(onPressed: (){
-                  // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>AddItemToList()));
+                Expanded(child: ElevatedButton(onPressed: () async {
+                  await signInWithGoogle();
+                  if(userCredential != null){
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>AddItemToList()));
+                  }
                 }, child: Text('Continue With Google'))),
               ],
             ),
@@ -69,27 +78,29 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Future<UserCredential> signInWithGoogle() async {
-  //   // Trigger the authentication flow
-  //   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-  //
-  //   // Obtain the auth details from the request
-  //   final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-  //
-  //   // Create a new credential
-  //   final credential = GoogleAuthProvider.credential(
-  //     accessToken: googleAuth?.accessToken,
-  //     idToken: googleAuth?.idToken,
-  //   );
-  //
-  //   // Once signed in, return the UserCredential
-  //   return await FirebaseAuth.instance.signInWithCredential(credential);
-  // }
-}
 
-class UserCredential {
-  String? uid;
-  String? email;
-  String? password;
-  String? displayName;
+  UserCredential? userCredential;
+  Future<UserCredential?> signInWithGoogle() async {
+    try{
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: '618222452701-d811uf57dgq8visjvpr54063ahbcsg9c.apps.googleusercontent.com',
+      );
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+      userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      // Once signed in, return the UserCredential
+      return userCredential;
+    }catch(e){
+      print('Error $e');
+    }
+    return null;
+  }
 }
